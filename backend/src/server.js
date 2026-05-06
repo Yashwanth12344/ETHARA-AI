@@ -17,10 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 app.use(cors({
-  origin: '*',
-  credentials: false,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  preflightContinue: false
+  origin: "https://frontend-pied-nine-46.vercel.app",
+  credentials: true
 }));
 
 // Allow all OPTIONS requests
