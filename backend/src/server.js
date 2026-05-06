@@ -16,7 +16,7 @@ const isLocalOrigin = (origin) => {
   if (!origin) return true;
 
   const localOriginPattern = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+)(:\d+)?$/;
-  return origin === frontendOrigin || localOriginPattern.test(origin);
+  return origin === frontendOrigin || localOriginPattern.test(origin) || origin.includes('vercel.app');
 };
 
 // Middleware
@@ -30,7 +30,9 @@ app.use(cors({
       callback(new Error(`CORS not allowed for origin: ${origin}`));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Database Connection
