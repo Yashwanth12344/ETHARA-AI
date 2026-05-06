@@ -12,27 +12,34 @@ const taskRoutes = require('./routes/taskRoutes');
 const app = express();
 const frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
 
-const isLocalOrigin = (origin) => {
-  if (!origin) return true;
-
-  const localOriginPattern = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+)(:\d+)?$/;
-  return origin === frontendOrigin || localOriginPattern.test(origin) || origin.includes('vercel.app');
-};
-
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: (origin, callback) => {
-    if (isLocalOrigin(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS not allowed for origin: ${origin}`));
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost and local networks
+    if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('192.168') || origin.includes('10.')) {
+      return callback(null, true);
     }
+    
+    // Allow Vercel deployments
+    if (origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow FRONTEND_URL if set
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+      return callback(null, true);
+    }
+    
+    callback(null, true); // Allow for now - adjust as needed for production
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
 // Database Connection
