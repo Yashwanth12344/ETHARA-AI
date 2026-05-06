@@ -10,21 +10,20 @@ const projectRoutes = require('./routes/projectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
-const frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
 
-// Middleware
+// Middleware - CORS FIRST
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Simple CORS - Allow all origins
+// CORS configuration
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: false
+  credentials: false,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false
 }));
 
-// Handle preflight requests
+// Allow all OPTIONS requests
 app.options('*', cors());
 
 // Database Connection
