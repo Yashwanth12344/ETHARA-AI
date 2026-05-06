@@ -34,13 +34,7 @@ app.use(cors({
 }));
 
 // Database Connection
-const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/team-task-manager';
-
-if (!process.env.MONGODB_URI) {
-  console.warn('MONGODB_URI is not set. Falling back to local MongoDB at mongodb://127.0.0.1:27017/team-task-manager');
-}
-
-mongoose.connect(mongoUri)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
