@@ -15,32 +15,17 @@ const frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Simple CORS - Allow all origins
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or Postman)
-    if (!origin) return callback(null, true);
-    
-    // Allow localhost and local networks
-    if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('192.168') || origin.includes('10.')) {
-      return callback(null, true);
-    }
-    
-    // Allow Vercel deployments
-    if (origin.includes('vercel.app')) {
-      return callback(null, true);
-    }
-    
-    // Allow FRONTEND_URL if set
-    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
-      return callback(null, true);
-    }
-    
-    callback(null, true); // Allow for now - adjust as needed for production
-  },
-  credentials: true,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: false
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
