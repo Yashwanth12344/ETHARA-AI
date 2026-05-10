@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 const allowedOrigins = [
+  "https://frontend-swart-theta-48.vercel.app",
   "https://frontend-one-sable-36.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
