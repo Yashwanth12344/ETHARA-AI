@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Use environment variable or fallback for production
+const API_URL = import.meta.env.VITE_API_URL || 'https://backend-1-1g73.onrender.com/api';
+
+if (!API_URL) {
+  console.warn('⚠️ VITE_API_URL environment variable is not set. Using fallback.');
+}
 
 const api = axios.create({
   baseURL: API_URL,
