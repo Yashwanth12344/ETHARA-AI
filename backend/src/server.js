@@ -16,9 +16,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
+const allowedOrigins = [
+  "https://frontend-one-sable-36.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: "https://frontend-pied-nine-46.vercel.app",
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Allow all OPTIONS requests
@@ -38,8 +47,23 @@ app.use('/api/projects/:projectId/tasks', taskRoutes);
 app.use('/api/tasks', taskRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ success: true, message: 'Server is running' });
+const { checkHealth } = require('./utils/healthCheck');
+
+app.get('/api/health', async (req, res) => {
+  try {
+    const health = await checkHealth();
+    const statusCode = health.status === 'ok' ? 200 : 503;
+    res.status(statusCode).json({ 
+      success: health.status === 'ok',
+      ...health
+    });
+  } catch (error) {
+    res.status(503).json({ 
+      success: false, 
+      status: 'error',
+      message: error.message 
+    });
+  }
 });
 
 // 404 handler

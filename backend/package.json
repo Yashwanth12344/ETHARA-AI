@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "health": "node -e \"require('dotenv').config({path:'./.env'}); const http = require('http'); const url = `http://localhost:${process.env.PORT || 5000}/api/health`; http.get(url, (res) => { let data = ''; res.on('data', chunk => data += chunk); res.on('end', () => { console.log('\\n🏥 Backend Health Check:\\n'); console.log(JSON.stringify(JSON.parse(data), null, 2)); console.log('\\n✅ Backend is running!\\n'); }); }).on('error', () => { console.log('\\n❌ Backend is not running. Start it with: npm run dev\\n'); process.exit(1); }); \""
   },
   "keywords": ["task", "manager", "team", "api"],
   "author": "",
